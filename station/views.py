@@ -1,5 +1,5 @@
 from django.http import Http404
-from rest_framework import status, generics, mixins
+from rest_framework import status, generics, mixins, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
@@ -53,6 +53,18 @@ class BusListGen(mixins.ListModelMixin,
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+
+
+class BusListGeneric(generics.ListCreateAPIView):
+    queryset = Bus.objects.all()
+    serializer_class = BusSerializer
+
+
+class BusListSet(mixins.ListModelMixin,
+                 mixins.CreateModelMixin,
+                 viewsets.GenericViewSet):
+    queryset = Bus.objects.all()
+    serializer_class = BusSerializer
 
 
 @api_view(["PUT", "GET", "DELETE"])
@@ -123,3 +135,37 @@ class BusDetailGen(
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+class BusDetailGeneric(
+    generics.RetrieveUpdateDestroyAPIView
+):
+    queryset = Bus.objects.all()
+    serializer_class = BusSerializer
+
+
+class BusDetailSet(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet):
+
+    queryset = Bus.objects.all()
+    serializer_class = BusSerializer
+
+
+class BusViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet):
+
+    queryset = Bus.objects.all()
+    serializer_class = BusSerializer
+
+
+class BusViewSetModel(viewsets.ModelViewSet):
+    queryset = Bus.objects.all()
+    serializer_class = BusSerializer
